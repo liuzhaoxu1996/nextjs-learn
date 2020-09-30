@@ -9,11 +9,14 @@ redis-server
 redis-cli
 
 3. 查看redis的key
-KEY *
+KEYs *
 
 4. 设置key
 set a 123
 
 5. 取key
 get a
+
+6. 删除key
+DEL a
 ```
