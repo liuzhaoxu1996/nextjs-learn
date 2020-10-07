@@ -1,45 +1,11 @@
-## nextjs集成antd
+## nextjs 项目目录结构
 
+- pages：每一个文件对应一个页面
 
-- yarn add antd
+- components：放置组件
 
-- yarn add babel-plugin-import 
+- lib：功能性代码
 
-```js
-babel-plugin-import 这个插件的作用是按需加载
+- static：静态资源
 
-例如： 
-import {Button} from 'antd';
-
-==>
-import Button from 'antd/lib/button';
-
-```
-
-- 配置.babelrc
-
-```js
-{
-    'presets': ['next/babel'],
-    'plugins': [
-        [
-            "import",
-            {
-                "libraryName": "antd"
-            }
-        ]
-    ]
-}
-```
-
-- 这时候只加载了dom结构，并没有引入antd的css
-
-- 全局加载antd的css
-
-```js
-
-// 这里为什么把所有css都引入了，是因为webpack打包时会出现bug
-// https://github.com/webpack-contrib/mini-css-extract-plugin/issues/250
-
-import 'antd/dist/antd.css'
-```
+- next.config.js：配置文件
