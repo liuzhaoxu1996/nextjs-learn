@@ -8,4 +8,7 @@ const A = ({router}) => (
     </>
 )
 
+A.getInitialProps = async({req, query}) => {
+    return { query }
+}
 export default withRouter(A)
