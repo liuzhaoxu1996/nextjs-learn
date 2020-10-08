@@ -1,8 +1,3 @@
-## 路由变化的钩子
+## nextjs数据获取方式
 
-- routeChangeStart
-- routeChangeComplete
-- routeChangeError
-- beforeHistoryChange
-- hashChangeStart
-- hashChangeComplete
+- getInitialProps: 页面（组件）加载之前的钩子
