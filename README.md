@@ -1,8 +1,4 @@
-## 路由变化的钩子
+## next数据获取方式
 
-- routeChangeStart
-- routeChangeComplete
-- routeChangeError
-- beforeHistoryChange
-- hashChangeStart
-- hashChangeComplete
+- getInitialProps: 在请求路由之前执行内部方法
+
