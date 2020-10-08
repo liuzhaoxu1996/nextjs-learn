@@ -1,3 +1,7 @@
-## nextjs数据获取方式
+## nextjs自定义App
 
-- getInitialProps: 页面（组件）加载之前的钩子
+- 作用
+    - 固定Layout
+    - redux
+    - 全局页面传入一些公用数据
+    - 自定义错误处理
