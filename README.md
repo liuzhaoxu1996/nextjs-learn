@@ -8,4 +8,5 @@
 
 - static：静态资源
 
+
 - next.config.js：配置文件
