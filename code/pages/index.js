@@ -1,7 +1,9 @@
 import {Button} from 'antd';
 import Link from 'next/link';
-export default () => (
-    <Link href='/api/hello'>
-        <Button>Index</Button>
+const index = () => (
+    <Link href='/test/a?id=1' title="AAA">
+        <Button>Page: index</Button>
     </Link>
 )
+
+export default index
