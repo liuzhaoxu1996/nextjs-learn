@@ -1,3 +1,7 @@
 import {Button} from 'antd';
-
-export default () => <Button><span>Index</span></Button>
+import Link from 'next/link';
+export default () => (
+    <Link href='/api/hello'>
+        <Button>Index</Button>
+    </Link>
+)

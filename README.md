@@ -1,12 +1,35 @@
-## nextjs 项目目录结构
+## Link
 
-- pages：每一个文件对应一个页面
+- 路由跳转
 
-- components：放置组件
+```js
+import {Button} from 'antd';
+import Link from 'next/link';
+export default () => (
+    <Link href='/api/hello'>
+        // 只能是一个节点
+        <Button>Index</Button>
+    </Link>
+)
+```
 
-- lib：功能性代码
-
-- static：静态资源
+- 需要指定渲染内容（Link标签本身不会渲染成dom元素）
 
 
-- next.config.js：配置文件
+## Router
+
+```js
+import {Button} from 'antd';
+import Router from 'next/router';
+export default () => {
+    function gotoTestB() {
+        Router.push('/test/b')
+    }
+    return (
+        <>
+            <Button onClick={gotoTestB}>Index</Button>
+        </>
+    )
+}
+
+```
