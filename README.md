@@ -7,21 +7,23 @@
 ```jsx
 // 示例
 function MyCountFunc() {
-    const [count, dispatchCount] = useReducer(countReducer, 0)
-    const [name, setName] = useState('jocky')
+    const [count, dispatchCount] = useReducer(countReducer, 0);
+    const [name, setName] = useState("jocky");
 
     useEffect(() => {
-        console.log('effect invoked')
+        console.log("effect invoked");
 
-        return () => console.log('effect deteched')
-    })
+        return () => console.log("effect deteched");
+    });
 
     return (
         <div>
-            <input value={name} onChange={(e) => setName(e.target.value)}>
-            <button onClick={() => dispatchCount({type: 'add'})}>{count}</button>
+            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <button onClick={() => dispatchCount({ type: "add" })}>
+                {count}
+            </button>
         </div>
-    )
+    );
 }
 ```
 
