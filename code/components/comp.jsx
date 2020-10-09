@@ -1,9 +1,2 @@
-import {Button} from 'antd';
-const comp = ({ children }) => {
-    return (
-        <>
-            <Button>{children}</Button>
-        </>
-    )
-}
+const comp = ({ children }) => <span>Lazy Component</span>
 export default comp

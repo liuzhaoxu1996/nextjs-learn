@@ -1,64 +1,25 @@
-## 集成其他 css in js 方案
+## LazyLoading
 
--   安装
-
-```bash
-yarn add styled-components babel-plugin-styled-components
-```
-
--   修改 babelrc
+-   异步加载模块
 
 ```js
-{
-    "presets": ["next/babel"],
-    "plugins": [
-        [
-            "import",
-            {
-                "libraryName": "antd"
-            }
-        ],
-        // +++++++++++++++++++++++++++++++
-        ["styled-components", { "ssr": true }]
-    ]
-}
+A.getInitialProps = async (ctx) => {
+    // ++++++++++++++++++++++++++++++++++
+    const moment = await import("moment");
+    return {
+        name: "A",
+        time: moment.default(Date.now() - 60 * 1000).fromNow(),
+    };
+};
 ```
 
--   配置\_document.js
+-   异步加载组件
 
 ```js
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import { ServerStyleSheet } from "styled-components";
-class MyDocument extends Document {
-    static async getInitialProps({ renderPage }) {
-        // Step 1: Create an instance of ServerStyleSheet
-        const sheet = new ServerStyleSheet();
+import dynamic from "next/dynamic";
+const Comp = dynamic(import("../../components/comp"));
 
-        // Step 2: Retrieve styles from components in the page
-        const page = renderPage((App) => (props) =>
-            sheet.collectStyles(<App {...props} />)
-        );
+...
 
-        // Step 3: Extract the styles as <style> tags
-        const styleTags = sheet.getStyleElement();
-
-        // Step 4: Pass styleTags as a prop
-        return { ...page, styleTags };
-    }
-
-    render() {
-        return (
-            <Html>
-                <Head>
-                    <style>{`.test { color: red }`}</style>
-                </Head>
-                <body className="test">
-                    <Main />
-                    <NextScript />
-                </body>
-            </Html>
-        );
-    }
-}
-export default MyDocument;
+// 详见 a.js
 ```
