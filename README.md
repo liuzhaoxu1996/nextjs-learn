@@ -1,3 +1,24 @@
-## nextjs 服务端渲染流程深度解析
+## 什么是 Hooks
 
-![nextjs](https://raw.githubusercontent.com/liuzhaoxu1996/nextjs-learn/3-13.nextjs%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/nextjs.png)
+---
+
+让函数组件具有类组件的能力
+
+```jsx
+// test/b.js
+import React, { useState, useEffect } from "react";
+
+function MyCountFunc() {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        // 组件挂载完成执行
+        const interval = setInterval(() => {
+            setCount((c) => c + 1);
+        }, 1000);
+        // return 方法在组件被销毁执行
+        return () => clearInterval(interval);
+    }, []);
+    return <span>{count}</span>;
+}
+export default MyCountFunc;
+```
