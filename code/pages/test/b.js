@@ -13,20 +13,20 @@ function countReducer(state, action) {
 }
 
 function MyCountFunc() {
-
-    // 声明变量
-    // const [count, setCount] = useState(0)
     const [count, dispatchCount] = useReducer(countReducer, 0)
+    const [name, setName] = useState('jocky')
 
     useEffect(() => {
-        // 组件挂载完成执行
-        const interval = setInterval(() => {
-            dispatchCount({ type: 'add' })
-        }, 1000)
-        // return 方法在组件被销毁执行
-        return () => clearInterval(interval)
-    }, [])
+        console.log('effect invoked')
 
-    return <span>{count}</span>
+        return () => console.log('effect deteched')
+    }, [name])
+
+    return (
+        <div>
+            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <button onClick={() => dispatchCount({ type: 'add' })}>{count}</button>
+        </div>
+    )
 }
 export default MyCountFunc
