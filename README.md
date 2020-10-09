@@ -1,37 +1,43 @@
-## API
+## Effect Hooks
 
--   useState
+-   useEffect
 
--   useReducer (处理数据时对象，或者数据庞大时使用)
+如果 useEffect 不传参数，只要数据发生变化，就会重新执行 useEffect
 
 ```jsx
-import React, { useState, useReducer, useEffect } from "react";
-
-function countReducer(state, action) {
-    switch (action.type) {
-        case "add":
-            return state + 1;
-        case "minus":
-            return state - 1;
-        default:
-            return state;
-    }
-}
-
+// 示例
 function MyCountFunc() {
-    // 声明变量
-    const [count, dispatchCount] = useReducer(countReducer, 0);
+    const [count, dispatchCount] = useReducer(countReducer, 0)
+    const [name, setName] = useState('jocky')
 
     useEffect(() => {
-        // 组件挂载完成执行
-        const interval = setInterval(() => {
-            dispatchCount({ type: "add" });
-        }, 1000);
-        // return 方法在组件被销毁执行
-        return () => clearInterval(interval);
-    }, []);
+        console.log('effect invoked')
 
-    return <span>{count}</span>;
+        return () => console.log('effect deteched')
+    })
+
+    return (
+        <div>
+            <input value={name} onChange={(e) => setName(e.target.value)}>
+            <button onClick={() => dispatchCount({type: 'add'})}>{count}</button>
+        </div>
+    )
 }
-export default MyCountFunc;
 ```
+
+如果 useEffect 传参数，传入的数据发生变化，才会重新执行 useEffect
+
+```jsx
+// 示例
+function MyCountFunc() {
+    ...
+    useEffect(() => {
+        console.log('effect invoked')
+
+        return () => console.log('effect deteched')
+    }, [name])
+    ...
+}
+```
+
+-   useLayoutEffect: 组件没有挂载之前执行，不常用
