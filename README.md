@@ -1,24 +1,44 @@
-## Context Hook
+## [Ref Hook](https://zh-hans.reactjs.org/docs/hooks-reference.html#useref)
 
--   useContext
+-   class 组件写法
 
-    1.  在\_app.js 引入 lib 定义的全局 context
+```js
+class MyCount extends React.Component {
+    constructor() {
+        super();
+        this.ref = React.createRef();
+    }
+    componentDidMount() {
+        this.ref.current;
+    }
+    render() {
+        return <span ref={this.ref}></span>;
+    }
+}
+```
 
-        ```jsx
-        import React from "react";
-        export default React.createContext("");
-        ```
+-   function 组件写法
 
-    2.  通过标签包裹所有页面（组件），注册全局 context
+```js
+import React, {
+    useState,
+    useReducer,
+    useContext,
+    useEffect,
+    useRef,
+} from "react";
 
-        ```html
-        <myContext.Provider value={context}>
-            <Component {...pageProps} />
-            <button onClick={() => useContext(context + 1)}>Add context</button>
-        </myContext.Provider>
-        ```
-
-    3.  各个页面通过 useContext 获取全局 context
-        ```jsx
-        const context = useContext(MyContext);
-        ```
+function MyCountFunc() {
+    const inputRef = useRef();
+    useEffect(() => {
+        console.log(inputRef);
+        return () => console.log("effect deteched");
+    });
+    return (
+        <div>
+            <input ref={inputRef} />
+        </div>
+    );
+}
+export default MyCountFunc;
+```

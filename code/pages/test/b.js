@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext, useEffect } from 'react';
+import React, { useState, useReducer, useContext, useEffect, useRef } from 'react';
 import MyContext from '../../lib/my-context'
 
 
@@ -16,17 +16,18 @@ function countReducer(state, action) {
 function MyCountFunc() {
     const [count, dispatchCount] = useReducer(countReducer, 0)
     const [name, setName] = useState('jocky')
+    const inputRef = useRef()
     const context = useContext(MyContext)
 
     useEffect(() => {
-        console.log('effect invoked')
+        console.log(inputRef)
 
         return () => console.log('effect deteched')
     }, [name])
 
     return (
         <div>
-            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <input ref={inputRef} value={name} onChange={(e) => setName(e.target.value)} />
             <button onClick={() => dispatchCount({ type: 'add' })}>{count}</button>
             <p>{context}</p>
         </div>
