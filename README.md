@@ -1,37 +1,52 @@
-## nextjs 自定义 document
+## nextjs 自定义样式
 
--   作用
+-   特性
 
-    -   只有在服务端渲染的时候才会被调用
-    -   用来修改服务端渲染的文档内容
-    -   一般用来配合第三方 css in js 使用
+    -   组件样式隔离
 
 -   写法
 
 ```js
-import Document, { Html, Head, Main, NextScript } from "next/document";
+// 例如：test/a.js
+import { withRouter } from "next/router";
 
-class MyDocument extends Document {
-    // 如果要覆盖document的getInitalProps方法，需要至少执行以下代码
+const A = ({ router, name }) => (
+    <>
+        <a className="link">query: {router.query.id}</a>
+        <style jsx>{`
+            a {
+                color: blue;
+            }
+            .link {
+                color: red;
+            }
+        `}</style>
+    </>
+);
 
-    // static async getInitialProps(ctx) {
-    //     const initialProps = await Document.getInitialProps(ctx);
-    //     return { ...initialProps };
-    // }
+A.getInitialProps = async () => {
+    return {
+        name: "A",
+    };
+};
 
-    render() {
-        return (
-            <Html>
-                <Head>
-                    <style>{`.test { color: red }`}</style>
-                </Head>
-                <body className="test">
-                    <Main />
-                    <NextScript />
-                </body>
-            </Html>
-        );
-    }
-}
-export default MyDocument;
+export default withRouter(A);
+```
+
+-   定义 global 样式
+
+```js
+const A = ({ router, name }) => (
+    <>
+        <a className="link">query: {router.query.id}</a>
+        <style jsx global>{`
+            a {
+                color: blue;
+            }
+            .link {
+                color: red;
+            }
+        `}</style>
+    </>
+);
 ```
