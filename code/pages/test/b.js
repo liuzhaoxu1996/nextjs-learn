@@ -1,17 +1,16 @@
 import Comp from '../../components/comp'
 import { withRouter } from 'next/router'
 
-const A = ({ router, name }) => (
+const B = ({ router, name }) => (
     <>
         <Comp>Page: {name}</Comp>
         <Comp>query: {router.query.id}</Comp>
     </>
 )
 
-A.getInitialProps = async () => {
+B.getInitialProps = async () => {
     return {
-        name: 'A'
+        name: 'B'
     }
 }
-
-export default withRouter(A)
+export default withRouter(B)

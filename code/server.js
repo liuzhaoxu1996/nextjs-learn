@@ -10,13 +10,8 @@ app.prepare().then(() => {
     const server = new Koa()
     const router = new Router()
 
-    router.get("/", async (ctx) => {
-        await app.render(ctx.req, ctx.res, '/', ctx.query)
-        ctx.respond = false
-    });
-
-    router.get("/test", async (ctx) => {
-        await app.render(ctx.req, ctx.res, '/test', ctx.query)
+    router.get("/test/b", async (ctx) => {
+        await app.render(ctx.req, ctx.res, '/test/b', ctx.query)
         ctx.respond = false
     });
 
@@ -35,10 +30,15 @@ app.prepare().then(() => {
         await handle(ctx.req, ctx.res)
         ctx.respond = false
     })
-    
+
+    server.use(async (ctx, next) => {
+        ctx.res.statusCode = 200
+        await next()
+    })
+
     server.use(router.routes())
-    
-    server.listen(3000, () => {
-        console.log('koa server listening on 3000')
+
+    server.listen(18801, () => {
+        console.log('koa server listening on 18801')
     })
 })

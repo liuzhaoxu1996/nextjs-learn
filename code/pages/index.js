@@ -1,9 +1,5 @@
-import {Button} from 'antd';
-import Link from 'next/link';
+import { Button } from 'antd';
 const index = () => (
-    <Link href='/test/a?id=1' as='/test/a/1' title="AAA">
-        <Button>Page: A</Button>
-    </Link>
+    <span>Index</span>
 )
-
 export default index
