@@ -1,43 +1,24 @@
-## Effect Hooks
+## Context Hook
 
--   useEffect
+-   useContext
 
-如果 useEffect 不传参数，只要数据发生变化，就会重新执行 useEffect
+    1.  在\_app.js 引入 lib 定义的全局 context
 
-```jsx
-// 示例
-function MyCountFunc() {
-    const [count, dispatchCount] = useReducer(countReducer, 0)
-    const [name, setName] = useState('jocky')
+        ```jsx
+        import React from "react";
+        export default React.createContext("");
+        ```
 
-    useEffect(() => {
-        console.log('effect invoked')
+    2.  通过标签包裹所有页面（组件），注册全局 context
 
-        return () => console.log('effect deteched')
-    })
+        ```html
+        <myContext.Provider value={context}>
+            <Component {...pageProps} />
+            <button onClick={() => useContext(context + 1)}>Add context</button>
+        </myContext.Provider>
+        ```
 
-    return (
-        <div>
-            <input value={name} onChange={(e) => setName(e.target.value)}>
-            <button onClick={() => dispatchCount({type: 'add'})}>{count}</button>
-        </div>
-    )
-}
-```
-
-如果 useEffect 传参数，传入的数据发生变化，才会重新执行 useEffect
-
-```jsx
-// 示例
-function MyCountFunc() {
-    ...
-    useEffect(() => {
-        console.log('effect invoked')
-
-        return () => console.log('effect deteched')
-    }, [name])
-    ...
-}
-```
-
--   useLayoutEffect: 组件没有挂载之前执行，不常用
+    3.  各个页面通过 useContext 获取全局 context
+        ```jsx
+        const context = useContext(MyContext);
+        ```
