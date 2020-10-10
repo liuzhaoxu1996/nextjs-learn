@@ -1,58 +1,29 @@
-## redux 中的 reducer
+## redux 中的 action
 
--   不要再 reducer 外部声明变量并引用，应该把变量放在 state 里面
+-   action 中处理异步 redux-thunk
 
-```jsx
-// bad xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-let count = 1;
-function reducer(state = initialState, action) {
-    switch (action.type) {
-        case "ADD":
-            return { count: count + 1 };
-        default:
-            return state;
-    }
-}
+```bash
+yarn add redux-thunk
 ```
 
--   有任何数据更新应该返回新的对象
-
 ```jsx
-function reducer(state = initialState, action) {
-    switch (action.type) {
-        case "ADD":
-            // 返回一个新的对象
-            return {
-                // ...
-            };
-        default:
-            return state;
-    }
-}
-```
+import { createStore, applyMiddleware } from "redux";
+import ReduxThunk from "redux-thunk";
 
--   拆分 reducer
-
-```jsx
-import {combineReducers} from 'redux'
-
-const counterState = {}
-const userState = {}
-function counterReducer(state, action) {
-    ...
-}
-function userReducer(state, action) {
-    ...
+function add(num) {
+    return {
+        type: "ADD",
+        num,
+    };
 }
 
-const allReducers = combineReducers({
-    counter: counterReducer,
-    user: userReducer
-})
-
-const store = createStore(allReducers, {
-    counter: counterState,
-    user: userState
-})
-...
+function addAsync(num) {
+    return (dispatch, getState) => {
+        setTimeout(() => {
+            dispatch(add(num));
+        }, 1000);
+    };
+}
+// 执行dispatch时，判断传入是否为函数，如果是函数则执行，并传入dispatch和getState作为参数
+store.dispatch(addAsync(6));
 ```
