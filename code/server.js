@@ -10,6 +10,11 @@ app.prepare().then(() => {
     const server = new Koa()
     const router = new Router()
 
+    router.get("/test/c", async (ctx) => {
+        await app.render(ctx.req, ctx.res, '/test/c', ctx.query)
+        ctx.respond = false
+    });
+
     router.get("/test/b", async (ctx) => {
         await app.render(ctx.req, ctx.res, '/test/b', ctx.query)
         ctx.respond = false
