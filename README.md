@@ -1,36 +1,8 @@
-## [Hooks 渲染优化](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
+## Redux
 
--   当依赖数据发生变化时，不相关的 hooks 不重新渲染
+-   单项数据流状态管理工具
 
--   useMemo 组件优化使用
+![img](https://miro.medium.com/max/1400/1*EdiFUfbTNmk_IxFDNqokqg.png)
 
-```jsx
-import React, {
-    useState,
-    useReducer,
-    useContext,
-    useEffect,
-    useRef,
-    memo,
-    useMemo,
-} from "react";
-
-const Child = memo(function Child({ onButtonClick, config }) {
-    console.log("child render");
-    return (
-        <button onClick={onButtonClick} style={{ color: config.color }}>
-            {config.text}
-        </button>
-    );
-});
-```
-
--   useCallback 对方法优化使用
-
-```jsx
-<Child
-    onButtonClick={useCallback(() => dispatchCount({ type: "add" }), [])}
-></Child>
-```
-
-详见：test/c.js
+-   STORE 存储 UI 最终的数据
+-   UI 发生数据修改，通过 action 修改 store 中的数据
