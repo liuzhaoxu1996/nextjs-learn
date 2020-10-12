@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
+import { composeWithDevTools } from "redux-devtools-extension";
 const initialState = {
     count: 0,
 }
@@ -15,7 +16,7 @@ function reducer(state = initialState, action) {
     }
 }
 
-const store = createStore(reducer, initialState, applyMiddleware(ReduxThunk))
+const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
 store.subscribe(() => { console.log('subscribe changed', store.getState()) })
 
