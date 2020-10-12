@@ -1,12 +1,18 @@
 import { Button } from 'antd';
-import store from '../store/store';
 import { connect } from 'react-redux';
-const index = ({ count, add }) => (
+import { add } from '../store/store';
+const Index = ({ count, add }) => (
     <>
         <span>{count}</span>
         <button onClick={() => add(3)}>add</button>
     </>
 )
+
+Index.getInitialProps = async ({ reduxStore }) => {
+    reduxStore.dispatch(add(3))
+    return {}
+}
+
 export default connect(function mapStateToProps(state) {
     return {
         count: state.count
@@ -15,4 +21,4 @@ export default connect(function mapStateToProps(state) {
     return {
         add: (num) => dispatch({ type: "ADD", num: num })
     }
-})(index)
+})(Index)

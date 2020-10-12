@@ -5,8 +5,6 @@ const initialState = {
     count: 0,
 }
 
-
-
 function reducer(state = initialState, action) {
     switch (action.type) {
         case 'ADD':
@@ -16,11 +14,7 @@ function reducer(state = initialState, action) {
     }
 }
 
-const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(ReduxThunk)))
-
-store.subscribe(() => { console.log('subscribe changed', store.getState()) })
-
-function add(num) {
+export function add(num) {
     return {
         type: 'ADD',
         num
@@ -34,6 +28,12 @@ function addAsync(num) {
         }, 1000)
     }
 }
-store.dispatch(addAsync(6))
 
-export default store
+export default function initializeStore(state) {
+    const store = createStore(
+        reducer,
+        Object.assign({}, initialState, state),
+        composeWithDevTools(applyMiddleware(ReduxThunk))
+    )
+    return store
+}
