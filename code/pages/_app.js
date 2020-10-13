@@ -7,29 +7,29 @@ import { Provider } from 'react-redux'
 import testHoc from '../lib/with-redux'
 
 function MyApp({ Component, pageProps, reduxStore }) {
-  const [context, useContext] = useState(0);
-  return (
-    <Layout>
-      <Provider store={reduxStore}>
-        <myContext.Provider value={context}>
-          <Component {...pageProps} />
-          <button onClick={() => useContext(context + 1)}>
-            Add context
+    const [context, useContext] = useState(0);
+    return (
+        <Layout>
+            <Provider store={reduxStore}>
+                <myContext.Provider value={context}>
+                    <Component {...pageProps} />
+                    <button onClick={() => useContext(context + 1)}>
+                        Add context
           </button>
-        </myContext.Provider>
-      </Provider>
-    </Layout >
-  )
+                </myContext.Provider>
+            </Provider>
+        </Layout >
+    )
 }
 
 MyApp.getInitialProps = async (ctx) => {
-  const { Component } = ctx
-  let pageProps = {}
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx)
-  }
-  return {
-    pageProps
-  }
+    const { Component } = ctx
+    let pageProps = {}
+    if (Component.getInitialProps) {
+        pageProps = await Component.getInitialProps(ctx)
+    }
+    return {
+        pageProps
+    }
 }
 export default testHoc(MyApp)

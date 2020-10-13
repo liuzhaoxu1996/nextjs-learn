@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.2",
     "@koa/router": "^8.0.7",
     "antd": "^4.6.6",
     "axios": "^0.20.0",
