@@ -1,140 +1,32 @@
-## 5-8 nextjs 集成 redux
+## 认证和授权介绍
 
--   问题: 服务端渲染会导致共用一个 store
+概述：OAuth 是一种行业标准的授权方式，通过客户端、服务端、授权服务器三个角色进行权限验证。
 
-![nextjs](./nextjs.png)
+![image](./oAuth.png)
 
--   将 reduxStore 注入 withReduxApp 组件的 getInitialProps(客户端、服务端渲染都会被执行) 方法里
+请求 token
 
--   解决：改造一下 store/store.js，不再直接暴露出 store 对象，而是暴露一个创建 store 的方法，并且允许传入初始状态来进行初始化。
+-   client_id, client_secret: 表明这个网站有使用 github 登录的权限
 
-```js
-// 修改store.js
-export default function initializeStore(state) {
-    const store = createStore(
-        reducer,
-        Object.assign({}, initialState, state),
-        composeWithDevTools(applyMiddleware(ReduxThunk))
-    );
-    return store;
-}
-```
+-   code: 表明用户授权了，一次性
 
--   在 lib 目录下新建 with-redux-app.js，我们决定用这个 hoc 来包裹\_app.js 里导出的组件，每次加载 app 都要通过我们这个 hoc
+-   redirect_uri: 跳转地址
 
-```jsx
-import React from "react";
-import initializeStore from "../store/store";
+流程：
 
-const isServer = typeof window === "undefined";
-const __NEXT_REDUX_STORE__ = "__NEXT_REDUX_STORE__";
+访问：
 
-function getOrCreateStore(initialState) {
-    if (isServer) {
-        // 服务端每次执行都重新创建一个store
-        return initializeStore(initialState);
-    }
-    // 在客户端执行这个方法的时候 优先返回window上已有的store
-    // 而不能每次执行都重新创建一个store 否则状态就无限重置了
-    if (!window[__NEXT_REDUX_STORE__]) {
-        window[__NEXT_REDUX_STORE__] = initializeStore(initialState);
-    }
-    return window[__NEXT_REDUX_STORE__];
-}
+1. 用户授权
 
-export default (Comp) => {
-    class withReduxApp extends React.Component {
-        constructor(props) {
-            super(props);
-            // getInitialProps创建了store 这里为什么又重新创建一次？
-            // 因为服务端执行了getInitialProps之后 返回给客户端的是序列化后的字符串
-            // redux里有很多方法 不适合序列化存储
-            // 所以选择在getInitialProps返回initialReduxState初始的状态
-            // 再在这里通过initialReduxState去创建一个完整的store
-            this.reduxStore = getOrCreateStore(props.initialReduxState);
-        }
+    https://github.com/login/oAuth/authorize?client_id=xxx&scope=xxx&redirect_uri=xxx
+    （进行用户授权,成功后跳回并携带 code）
 
-        render() {
-            const { Component, pageProps, ...rest } = this.props;
-            return (
-                <Comp
-                    {...rest}
-                    Component={Component}
-                    pageProps={pageProps}
-                    reduxStore={this.reduxStore}
-                />
-            );
-        }
-    }
+2. 拿到 token
 
-    // 这个其实是_app.js的getInitialProps
-    // 在服务端渲染和客户端路由跳转时会被执行
-    // 所以非常适合做redux-store的初始化
-    withReduxApp.getInitialProps = async (ctx) => {
-        const reduxStore = getOrCreateStore();
-        ctx.reduxStore = reduxStore;
+    https://github.com/login/oAuth/access_token
+    （携带 body：client_id, client_secret, code）
 
-        let appProps = {};
-        if (typeof Comp.getInitialProps === "function") {
-            appProps = await Comp.getInitialProps(ctx);
-        }
+3. 拿到用户信息
 
-        return {
-            ...appProps,
-            initialReduxState: reduxStore.getState(),
-        };
-    };
-
-    return withReduxApp;
-};
-```
-
--   在\_app.js 中引入 hoc
-
-```jsx
-import App, { Container } from "next/app";
-import "antd/dist/antd.css";
-import React from "react";
-import { Provider } from "react-redux";
-import Layout from "../components/Layout";
-import initializeStore from "../store/store";
-import withRedux from "../lib/with-redux-app";
-class MyApp extends App {
-    // App组件的getInitialProps比较特殊
-    // 能拿到一些额外的参数
-    // Component: 被包裹的组件
-    static async getInitialProps(ctx) {
-        const { Component } = ctx;
-        let pageProps = {};
-
-        // 拿到Component上定义的getInitialProps
-        if (Component.getInitialProps) {
-            // 执行拿到返回结果`
-            pageProps = await Component.getInitialProps(ctx);
-        }
-
-        // 返回给组件
-        return {
-            pageProps,
-        };
-    }
-
-    render() {
-        const { Component, pageProps, reduxStore } = this.props;
-        return (
-            <Container>
-                <Layout>
-                    <Provider store={reduxStore}>
-                        {/* 把pageProps解构后传递给组件 */}
-                        <Component {...pageProps} />
-                    </Provider>
-                </Layout>
-            </Container>
-        );
-    }
-}
-
-export default withRedux(MyApp);
-```
-
-这样，我们就实现了在 next 中集成 redux。
+    https://api.github.com/user
+    （携带 header 头：access_token）
