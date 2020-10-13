@@ -45,7 +45,7 @@ const LayoutComp = ({ children }) => {
                     </div>
                     <div className="header-right">
                         <div className="user">
-                            <Avatar size={40} icon="user" />
+                            <Avatar size={40}>USER</Avatar>
                         </div>
                     </div>
                 </div>
