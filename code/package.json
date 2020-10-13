@@ -10,9 +10,12 @@
   "dependencies": {
     "@koa/router": "^8.0.7",
     "antd": "^4.6.6",
+    "axios": "^0.20.0",
     "babel-plugin-import": "^1.13.0",
     "babel-plugin-styled-components": "^1.11.1",
+    "ioredis": "^4.17.3",
     "koa": "^2.13.0",
+    "koa-session": "^6.1.0",
     "moment": "^2.29.1",
     "next": "^9.5.4",
     "react": "^16.13.1",

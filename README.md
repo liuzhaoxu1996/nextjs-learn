@@ -1,32 +1,150 @@
-## 认证和授权介绍
+## 接入 github OAuth
 
-概述：OAuth 是一种行业标准的授权方式，通过客户端、服务端、授权服务器三个角色进行权限验证。
+服务端通过获取 cookie 的值，获取 user 信息，存放在 session 中
 
-![image](./oAuth.png)
+-   cookie: 存放用户的通行证
+-   session: 存放用户信息
 
-请求 token
+1. 安装 koa-session
 
--   client_id, client_secret: 表明这个网站有使用 github 登录的权限
+`yarn add koa-session`
 
--   code: 表明用户授权了，一次性
+2. 配置 koa-session
 
--   redirect_uri: 跳转地址
+```js
+server.keys = ["github-app"];
+const SESSION_CONFIG = {
+    key: "jid", // 存到cookie里的key
+    store: new RedisSessionStore(redis), // 信息存到redis
+    maxAge: 10 * 1000, // 过期时间
+};
+```
 
-流程：
+3. 编写 store
 
-访问：
+```js
+function getRedisSessionId(sid) {
+    return `ssid:${sid}`;
+}
+class RedisSessionStore {
+    constructor(client) {
+        this.client = client;
+    }
+    //  获取redis存储的session数据
+    async get(sid) {
+        console.log("get session", sid);
+        const id = getRedisSessionId(sid);
+        const data = await this.client.get(id);
+        if (!data) {
+            return null;
+        }
+        try {
+            const result = JSON.parse(data);
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
-1. 用户授权
+    // 存储session数据到redis
+    async set(sid, sess, ttl) {
+        console.log("set session", sid);
 
-    https://github.com/login/oAuth/authorize?client_id=xxx&scope=xxx&redirect_uri=xxx
-    （进行用户授权,成功后跳回并携带 code）
+        const id = getRedisSessionId(sid);
+        if (typeof ttl === "number") {
+            ttl = Math.ceil(ttl / 1000);
+        }
+        try {
+            const sessStr = JSON.stringify(sess);
+            if (ttl) {
+                await this.client.setex(id, ttl, sessStr);
+            } else {
+                await this.client.set(id, sessStr);
+            }
+        } catch (err) {}
+    }
 
-2. 拿到 token
+    // 从redis当中删除某个session
+    async destroy(sid) {
+        console.log("destory session", sid);
+        const id = getRedisSessionId(sid);
+        await this.client.del(id);
+    }
+}
 
-    https://github.com/login/oAuth/access_token
-    （携带 body：client_id, client_secret, code）
+module.exports = RedisSessionStore;
+```
 
-3. 拿到用户信息
+4. 编写路由，设置或删除 session
 
-    https://api.github.com/user
-    （携带 header 头：access_token）
+```js
+router.get("/set/user", async (ctx) => {
+    ctx.session.user = {
+        name: "jocky",
+        age: 18,
+    };
+    ctx.body = "set session success";
+});
+
+router.get("/delete/user", async (ctx) => {
+    ctx.session = null;
+    ctx.body = "delete session success";
+});
+```
+
+5. 使用 github oAuth
+
+    - 引入 axios `yarn add axios`
+
+6. 通过 code 获取用户信息，并保存到 session 中
+
+```js
+// auth.js
+const axios = require("axios");
+const config = require("../config");
+
+const { client_id, client_secret, request_token_url } = config.github;
+
+module.exports = (server) => {
+    server.use(async (ctx, next) => {
+        if (ctx.path === "/auth") {
+            const code = ctx.query.code;
+            if (!code) {
+                ctx.body = "code not exist";
+                return;
+            }
+            const result = await axios({
+                method: "POST",
+                url: request_token_url,
+                data: {
+                    client_id,
+                    client_secret,
+                    code,
+                },
+                headers: {
+                    Accept: "application/json",
+                },
+            });
+            if (result.status === 200 && result.data && !result.data.error) {
+                ctx.session.githubAuth = result.data;
+                const { access_token, token_type } = result.data;
+                const userInfoResp = await axios({
+                    method: "GET",
+                    url: "https://api.github.com/user",
+                    headers: {
+                        Authorization: `${token_type} ${access_token}`,
+                    },
+                });
+                ctx.session.userInfo = userInfoResp.data;
+                ctx.redirect("/");
+            } else {
+                const errorMsg = result.data && result.data.error;
+                ctx.body = `request token failed ${errorMsg}`;
+            }
+            console.log(result.status, result.data);
+        } else {
+            await next();
+        }
+    });
+};
+```
