@@ -12,6 +12,7 @@ const githubIconStyle = {
     paddingTop: 10,
     marginRight: 20
 }
+
 const LayoutComp = ({ children }) => {
     const [search, setSearch] = useState('')
     const handleSearchChange = useCallback((event) => {
@@ -23,7 +24,7 @@ const LayoutComp = ({ children }) => {
     return (
         <Layout>
             <Header>
-                <div className="header-inner">
+                <Container renderer={<div className="header-inner" />}>
                     <div className="header-left">
                         <div className="logo">
                             <GithubFilled style={githubIconStyle} />
@@ -42,10 +43,10 @@ const LayoutComp = ({ children }) => {
                             <Avatar size={40}>USER</Avatar>
                         </div>
                     </div>
-                </div>
+                </Container>
             </Header>
             <Content>
-                <Container comp='div'>
+                <Container>
                     {children}
                 </Container>
             </Content>
@@ -68,6 +69,10 @@ const LayoutComp = ({ children }) => {
                 }
                 .ant-layout {
                     height: 100%;
+                }
+                .ant-layout-header{
+                    padding-left: 0;
+                    padding-right: 0;
                 }
             `}</style>
         </Layout>
