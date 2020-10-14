@@ -4,9 +4,10 @@ import { GithubFilled } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import Link from 'next/link';
 import Container from './container'
-
 import getConfig from 'next/config'
 
+import { logout } from '../store/store';
+   
 const { publicRuntimeConfig } = getConfig()
 
 const {Header, Content, Footer} = Layout
@@ -19,24 +20,29 @@ const githubIconStyle = {
     marginRight: 20
 }
 
-const userDropdown = (
-    <Menu>
-        <Menu.Item>
-            <a href="#" onClick={(e) => { e.preventDefault() }}>
-                登 出
-            </a>
-        </Menu.Item>
-    </Menu>
-) 
 
-const LayoutComp = ({ children, user }) => {
+const LayoutComp = ({ children, user, logout }) => {
     const [search, setSearch] = useState('')
     const handleSearchChange = useCallback((event) => {
         setSearch(event.target.value)
     }, [setSearch])
 
     const handleOnSearch = useCallback(() => {}, [])
+    const handleLogout = useCallback((e) => {
+        e.preventDefault()
+        logout()
+    }, [logout])
 
+    const userDropdown = (
+        <Menu>
+            <Menu.Item>
+                <a href="#" onClick={handleLogout}>
+                    登 出
+                </a>
+            </Menu.Item>
+        </Menu>
+    ) 
+    
     return (
         <Layout>
             <Header>
@@ -60,11 +66,8 @@ const LayoutComp = ({ children, user }) => {
                                 user && user.id ? 
                                 (
                                     <Dropdown overlay={userDropdown}>
-                                        <a href='/'>
-                                            <Avatar size={40} src={user.avatar_url}></Avatar>
-                                        </a>
+                                        <Avatar size={40} src={user.avatar_url}></Avatar>
                                     </Dropdown>
-                                    
                                 ) : (
                                     <Tooltip title="点击进行登录">
                                         <a href={publicRuntimeConfig.OAUTH_URL}>
@@ -114,5 +117,9 @@ const LayoutComp = ({ children, user }) => {
 export default connect(function mapState(state) {
     return {
         user: state.user
+    }
+}, function mapReducer(dispatch) {
+    return {
+        logout: () => dispatch(logout())
     }
 })(LayoutComp)
