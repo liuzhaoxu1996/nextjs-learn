@@ -80,6 +80,8 @@ app.prepare().then(() => {
     server.use(router.routes())
 
     server.use(async (ctx, next) => {
+        ctx.req.session = ctx.session
+        // next渲染
         await handle(ctx.req, ctx.res)
         ctx.respond = false
     })
