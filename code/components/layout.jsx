@@ -1,8 +1,14 @@
 import { useState, useCallback } from 'react';
-import { Button, Layout, Icon, Input, Avatar } from 'antd';
+import { Button, Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from 'antd';
 import { GithubFilled } from '@ant-design/icons';
+import { connect } from 'react-redux';
 import Link from 'next/link';
 import Container from './container'
+
+import getConfig from 'next/config'
+
+const { publicRuntimeConfig } = getConfig()
+
 const {Header, Content, Footer} = Layout
 
 const githubIconStyle = {
@@ -13,7 +19,17 @@ const githubIconStyle = {
     marginRight: 20
 }
 
-const LayoutComp = ({ children }) => {
+const userDropdown = (
+    <Menu>
+        <Menu.Item>
+            <a href="#" onClick={(e) => { e.preventDefault() }}>
+                登 出
+            </a>
+        </Menu.Item>
+    </Menu>
+) 
+
+const LayoutComp = ({ children, user }) => {
     const [search, setSearch] = useState('')
     const handleSearchChange = useCallback((event) => {
         setSearch(event.target.value)
@@ -40,7 +56,24 @@ const LayoutComp = ({ children }) => {
                     </div>
                     <div className="header-right">
                         <div className="user">
-                            <Avatar size={40}>USER</Avatar>
+                            {
+                                user && user.id ? 
+                                (
+                                    <Dropdown overlay={userDropdown}>
+                                        <a href='/'>
+                                            <Avatar size={40} src={user.avatar_url}></Avatar>
+                                        </a>
+                                    </Dropdown>
+                                    
+                                ) : (
+                                    <Tooltip title="点击进行登录">
+                                        <a href={publicRuntimeConfig.OAUTH_URL}>
+                                            <Avatar size={40}>USER</Avatar>
+                                        </a>
+                                    </Tooltip>
+                                   
+                                )
+                            }
                         </div>
                     </div>
                 </Container>
@@ -78,4 +111,8 @@ const LayoutComp = ({ children }) => {
         </Layout>
     )
 }
-export default LayoutComp
+export default connect(function mapState(state) {
+    return {
+        user: state.user
+    }
+})(LayoutComp)

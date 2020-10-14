@@ -9,16 +9,16 @@ import testHoc from '../lib/with-redux'
 function MyApp({ Component, pageProps, reduxStore }) {
     const [context, useContext] = useState(0);
     return (
-        <Layout>
-            <Provider store={reduxStore}>
+        <Provider store={reduxStore}>
+            <Layout>
                 <myContext.Provider value={context}>
                     <Component {...pageProps} />
                     <button onClick={() => useContext(context + 1)}>
                         Add context
-          </button>
+                    </button>
                 </myContext.Provider>
-            </Provider>
-        </Layout >
+            </Layout >
+        </Provider>
     )
 }
 
