@@ -1,8 +1,9 @@
+import Link from 'next/link'
 const Index = () => {
     return (
-        <>
-            <span>Index</span>
-        </>
+        <Link href="/detail">
+            <a>goToDetail</a>
+        </Link>
     )
 }
 

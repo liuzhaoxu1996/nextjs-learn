@@ -10,7 +10,7 @@ import { logout } from '../store/store';
 import { withRouter } from 'next/router'
 const { publicRuntimeConfig } = getConfig()
 
-const {Header, Content, Footer} = Layout
+const { Header, Content, Footer } = Layout
 
 const githubIconStyle = {
     color: 'white',

@@ -27,7 +27,7 @@ app.prepare().then(() => {
     auth(server)
 
     server.use(async (ctx, next) => {
-        console.log(ctx.session)
+        // console.log(ctx.session)
         await next()
     })
 
