@@ -3,6 +3,7 @@ const Router = require('@koa/router')
 const session = require('koa-session')
 const next = require('next') // next作为中间件
 const auth = require('./server/auth')
+const api = require('./server/api')
 
 const Redis = require('ioredis')
 const RedisSessionStore = require('./server/session-store')
@@ -25,6 +26,7 @@ app.prepare().then(() => {
     server.use(session(SESSION_CONFIG, server))
 
     auth(server)
+    api(server)
 
     server.use(async (ctx, next) => {
         // console.log(ctx.session)

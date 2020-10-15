@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import testHoc from '../lib/with-redux'
 import Link from 'next/link'
-
+import axios from 'axios'
 function MyApp({ Component, pageProps, reduxStore }) {
     const router = useRouter()
 
@@ -27,6 +27,10 @@ function MyApp({ Component, pageProps, reduxStore }) {
         router.events.on('routeChangeStart', startLoading);
         router.events.on('routeChangeComplete', stopLoading);
         router.events.on('routeChangeError', stopLoading);
+
+        axios.get('/github/search/repositories?q=react').then((data) => {
+            console.log(data);
+        });
         return () => {
             router.events.off('routeChangeStart', startLoading);
             router.events.off('routeChangeComplete', stopLoading);
