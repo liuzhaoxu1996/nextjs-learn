@@ -31,41 +31,6 @@ app.prepare().then(() => {
         await next()
     })
 
-    router.get("/test/c", async (ctx) => {
-        await app.render(ctx.req, ctx.res, '/test/c', ctx.query)
-        // 不使用koa的respond处理
-        ctx.respond = false
-    });
-
-    router.get("/test/b", async (ctx) => {
-        await app.render(ctx.req, ctx.res, '/test/b', ctx.query)
-        ctx.respond = false
-    });
-
-    router.get("/test/a/:id", async (ctx) => {
-        const id = ctx.params.id
-        await handle(ctx.req, ctx.res, {
-            pathname: '/test/a',
-            query: {
-                id
-            }
-        })
-        ctx.respond = false
-    });
-
-    // router.get('/set/user', async ctx => {
-    //     ctx.session.user = {
-    //         name: 'jocky',
-    //         age: 18
-    //     }
-    //     ctx.body = 'set session success'
-    // })
-
-    // router.get('/delete/user', async ctx => {
-    //     ctx.session = null
-    //     ctx.body = 'delete session success'
-    // })
-
     router.get('/api/user/info', async (ctx) => {
         const user = ctx.session.userInfo
         if (!user) {

@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 import Container from './container'
 import getConfig from 'next/config'
-
+import axios from 'axios';
 import { logout } from '../store/store';
-   
+import { withRouter } from 'next/router'
 const { publicRuntimeConfig } = getConfig()
 
 const {Header, Content, Footer} = Layout
@@ -21,17 +21,32 @@ const githubIconStyle = {
 }
 
 
-const LayoutComp = ({ children, user, logout }) => {
+const LayoutComp = ({ children, user, logout, router }) => {
     const [search, setSearch] = useState('')
+
     const handleSearchChange = useCallback((event) => {
         setSearch(event.target.value)
     }, [setSearch])
 
     const handleOnSearch = useCallback(() => {}, [])
+
     const handleLogout = useCallback((e) => {
         e.preventDefault()
         logout()
     }, [logout])
+
+    const handleGotoOAuth = useCallback((e) => {
+        e.preventDefault()
+        axios.get(`/prepare-auth?url=${router.asPath}`).then((resp) => {
+            if (resp.status === 200) {
+                location.href = publicRuntimeConfig.OAUTH_URL
+            } else {
+                console.log('prepare auth failed', resp);
+            }
+        }).catch(err => {
+            console.log('prepare auth failed', err);
+        })
+    }, [])
 
     const userDropdown = (
         <Menu>
@@ -70,7 +85,7 @@ const LayoutComp = ({ children, user, logout }) => {
                                     </Dropdown>
                                 ) : (
                                     <Tooltip title="点击进行登录">
-                                        <a href={publicRuntimeConfig.OAUTH_URL}>
+                                        <a href={`/prepare-auth?url=${router.asPath}`}>
                                             <Avatar size={40}>USER</Avatar>
                                         </a>
                                     </Tooltip>
@@ -114,7 +129,7 @@ const LayoutComp = ({ children, user, logout }) => {
         </Layout>
     )
 }
-export default connect(function mapState(state) {
+export default withRouter(connect(function mapState(state) {
     return {
         user: state.user
     }
@@ -122,4 +137,4 @@ export default connect(function mapState(state) {
     return {
         logout: () => dispatch(logout())
     }
-})(LayoutComp)
+})(LayoutComp))

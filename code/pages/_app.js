@@ -13,9 +13,6 @@ function MyApp({ Component, pageProps, reduxStore }) {
             <Layout>
                 <myContext.Provider value={context}>
                     <Component {...pageProps} />
-                    <button onClick={() => useContext(context + 1)}>
-                        Add context
-                    </button>
                 </myContext.Provider>
             </Layout >
         </Provider>

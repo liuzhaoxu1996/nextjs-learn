@@ -1,7 +1,7 @@
 const Index = () => {
     return (
         <>
-            <span></span>
+            <span>Index</span>
         </>
     )
 }
