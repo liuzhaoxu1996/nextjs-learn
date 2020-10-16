@@ -4,6 +4,7 @@ const session = require('koa-session')
 const next = require('next') // next作为中间件
 const auth = require('./server/auth')
 const api = require('./server/api')
+const koaBody = require('koa-body')
 
 const Redis = require('ioredis')
 const RedisSessionStore = require('./server/session-store')
@@ -20,18 +21,15 @@ app.prepare().then(() => {
     const SESSION_CONFIG = {
         key: 'jid',
         store: new RedisSessionStore(redis),
-        maxAge: 10 * 1000
     }
 
     server.use(session(SESSION_CONFIG, server))
 
-    auth(server)
-    api(server)
+    server.use(koaBody())
 
-    server.use(async (ctx, next) => {
-        // console.log(ctx.session)
-        await next()
-    })
+    auth(server)
+
+    api(server)
 
     router.get('/api/user/info', async (ctx) => {
         const user = ctx.session.userInfo
@@ -51,6 +49,11 @@ app.prepare().then(() => {
         // next渲染
         await handle(ctx.req, ctx.res)
         ctx.respond = false
+    })
+
+    server.use(async (ctx, next) => {
+        ctx.res.statusCode = 200
+        await next()
     })
 
     server.listen(18801, () => {

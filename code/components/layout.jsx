@@ -22,8 +22,6 @@ const githubIconStyle = {
 
 
 const LayoutComp = ({ children, user, logout, router }) => {
-    console.log(router)
-    console.log(router.pathname)
     const urlQuery = router.query && router.query.query || ''
 
     const [search, setSearch] = useState(urlQuery)

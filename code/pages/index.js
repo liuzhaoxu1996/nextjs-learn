@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import axios from 'axios'
 import api from '../lib/api'
 
-const Index = () => {
+const Index = ({ data }) => {
+    console.log(data)
     return (
         <Link href="/detail">
             <a>goToDetail</a>
@@ -12,7 +12,7 @@ const Index = () => {
 
 Index.getInitialProps = async ({ ctx }) => {
     const result = await api.request({
-        url: '/search/repositories?q=react',
+        url: '/user/repos',
     }, ctx.req, ctx.res)
     return {
         data: result.data,

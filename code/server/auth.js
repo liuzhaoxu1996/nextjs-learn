@@ -40,7 +40,6 @@ module.exports = (server) => {
                 const errorMsg = result.data && result.data.error
                 ctx.body = `request token failed ${errorMsg}`
             }
-            console.log(result.status, result.data)
         } else {
             await next()
         }
