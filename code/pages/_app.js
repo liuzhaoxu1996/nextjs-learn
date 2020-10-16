@@ -28,9 +28,7 @@ function MyApp({ Component, pageProps, reduxStore }) {
         router.events.on('routeChangeComplete', stopLoading);
         router.events.on('routeChangeError', stopLoading);
 
-        axios.get('/github/search/repositories?q=react').then((data) => {
-            console.log(data);
-        });
+
         return () => {
             router.events.off('routeChangeStart', startLoading);
             router.events.off('routeChangeComplete', stopLoading);
