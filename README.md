@@ -1,5 +1,1 @@
-## 8-3.展示基本组件的开发
-
-### Repo 组件
-
-[Repo.jsx](./code/components/Repo.jsx)
+## 8-4.tab 切换展示创建的仓库和关注的仓库
