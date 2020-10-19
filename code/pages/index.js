@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import api from '../lib/api'
 
-const Index = ({ data }) => {
-    console.log(data)
+const Index = ({ userRepos, userStaredRepos, isLogin }) => {
+    console.log(userRepos, userStaredRepos, isLogin)
     return (
         <Link href="/detail">
             <a>goToDetail</a>
@@ -10,12 +10,26 @@ const Index = ({ data }) => {
     )
 }
 
-Index.getInitialProps = async ({ ctx }) => {
-    const result = await api.request({
+Index.getInitialProps = async ({ ctx, reduxStore }) => {
+    const user = reduxStore.getState().user
+
+    if (!(user && user.id)) {
+        return {
+            isLogin: false
+        }
+    }
+    const userRepos = await api.request({
         url: '/user/repos',
     }, ctx.req, ctx.res)
+
+    const userStaredRepos = await api.request({
+        url: '/user/repos',
+    }, ctx.req, ctx.res)
+
     return {
-        data: result.data,
+        isLogin: true,
+        userRepos: userRepos.data,
+        userStaredRepos: userStaredRepos.data
     }
 }
 

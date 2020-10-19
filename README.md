@@ -1,5 +1,7 @@
-## 7-11 服务端渲染和客户端渲染的差异
+## 8-1.联调主要数据
 
--   服务端渲染：axios.get('/github/search/repositories?q=react')
+由于 index 页面的接口，需要用户登录后的 token，如果用户登出，页面会报错 401。所以在请求接口之前，我们需要判断用户是否登录。
 
--   实际 axios 会请求：http://127.0.0.1/github/search/repositories?q=react
+1. 可以通过 ctx.res.session 来获取用户信息，但是只有服务端渲染才能拿到
+
+2. 可以把 reduxStore 内容在 ctx 中保存下来，通过获取 ctx.reduxStore.getState()，获取用户信息，这样客户端和服务端渲染请求页面路由的时候，就可以拿到用户信息了。
