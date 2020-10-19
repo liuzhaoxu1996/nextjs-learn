@@ -1,15 +1,27 @@
 import Link from 'next/link'
 import api from '../lib/api'
-import { Button } from 'antd'
 
+import { Button, Tabs } from 'antd'
 import { MailOutlined } from '@ant-design/icons';
+
 import getConfig from 'next/config'
 import { connect } from 'react-redux';
 import Repo from '../components/Repo'
+import { withRouter, useRouter } from 'next/router'
 
+const { TabPane } = Tabs;
 const { publicRuntimeConfig } = getConfig()
+const isServer = typeof window === 'undefined'
 
-const Index = ({ userRepos, userStaredRepos, isLogin, user }) => {
+const Index = ({ userRepos, userStaredRepos, isLogin, user, router }) => {
+    const tabKey = router.query.key || '1';
+
+    const nextRouter = useRouter()
+
+    const handleTabChange = (activeKey) => {
+        nextRouter.push(`/?key=${activeKey}`)
+    }
+
     if (!(user && user.id)) {
         return (
             <div className="root">
@@ -41,9 +53,19 @@ const Index = ({ userRepos, userStaredRepos, isLogin, user }) => {
                 </p>
             </div>
             <div className="user-repos">
-                {userRepos.map((repo, index) => (
-                    <Repo repo={repo} key={index} />
-                ))}
+                <Tabs defaultActiveKey={tabKey} onChange={handleTabChange}>
+                    <TabPane tab="你的仓库" key="1">
+                        {userRepos.map((repo) => (
+                            <Repo repo={repo} key={repo.id} />
+                        ))}
+                    </TabPane>
+                    <TabPane tab="你关注的仓库" key="2">
+                        {userStaredRepos.map((repo, index) => (
+                            <Repo repo={repo} key={repo.id} />
+                        ))}
+                    </TabPane>
+                </Tabs>
+
             </div>
             <style jsx>{`
                 .root {
@@ -97,23 +119,25 @@ Index.getInitialProps = async ({ ctx, reduxStore }) => {
             isLogin: false
         }
     }
+
+    console.log(ctx.req, ctx.res)
     const userRepos = await api.request({
         url: '/user/repos',
     }, ctx.req, ctx.res)
 
     const userStaredRepos = await api.request({
-        url: '/user/repos',
+        url: '/user/starred',
     }, ctx.req, ctx.res)
 
     return {
         isLogin: true,
-        userRepos: userRepos.data,
-        userStaredRepos: userStaredRepos.data
+        userRepos: userRepos.data || [],
+        userStaredRepos: userStaredRepos.data || []
     }
 }
 
-export default connect(function mapState(state) {
+export default withRouter(connect(function mapState(state) {
     return {
         user: state.user
     }
-})(Index)
+})(Index))

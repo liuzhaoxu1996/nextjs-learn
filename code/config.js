@@ -1,5 +1,5 @@
 const GITHUB_OAUTH_URL = 'https://github.com/login/oauth/authorize'
-const SCOPE = 'user'
+const SCOPE = 'user,repo'
 const client_id = '8079e3ee0c779f71f206'
 
 module.exports = {

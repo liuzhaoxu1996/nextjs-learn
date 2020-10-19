@@ -4,7 +4,7 @@ const axios = require('axios')
 const isServer = typeof window === 'undefined'
 const github_base_url = 'https://api.github.com'
 
-const requestGithub = async (method, url, data, headers) => {
+const requestGithub = async (method, url, data = {}, headers) => {
     return await axios({
         method,
         url: `${github_base_url}${url}`,
@@ -19,7 +19,7 @@ async function request({ method = "GET", url, data = {} }, req, res) {
     }
     if (isServer) {
         const session = req.session
-        const githubAuth = session.githubAuth
+        const githubAuth = session.githubAuth || {}
         const headers = {}
 
         if (githubAuth && githubAuth.access_token) {
