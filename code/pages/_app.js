@@ -1,7 +1,6 @@
 import 'antd/dist/antd.css'
 import '../styles/globals.css'
 import Layout from '../components/layout'
-import myContext from '../lib/my-context'
 import PageLoading from '../components/PageLoading'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
@@ -40,9 +39,7 @@ function MyApp({ Component, pageProps, reduxStore }) {
         <Provider store={reduxStore}>
             {loading ? <PageLoading /> : null}
             <Layout>
-                <myContext.Provider value={context}>
-                    <Component {...pageProps} />
-                </myContext.Provider>
+                <Component {...pageProps} />
             </Layout >
         </Provider>
     )
