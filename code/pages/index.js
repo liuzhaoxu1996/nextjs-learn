@@ -5,6 +5,7 @@ import { Button } from 'antd'
 import { MailOutlined } from '@ant-design/icons';
 import getConfig from 'next/config'
 import { connect } from 'react-redux';
+import Repo from '../components/Repo'
 
 const { publicRuntimeConfig } = getConfig()
 
@@ -40,12 +41,14 @@ const Index = ({ userRepos, userStaredRepos, isLogin, user }) => {
                 </p>
             </div>
             <div className="user-repos">
-                <p>user repos</p>
+                {userRepos.map((repo, index) => (
+                    <Repo repo={repo} key={index} />
+                ))}
             </div>
             <style jsx>{`
                 .root {
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     padding: 20px 0;
                 }
 
@@ -76,6 +79,10 @@ const Index = ({ userRepos, userStaredRepos, isLogin, user }) => {
                 .avatar {
                     width: 100%;
                     border-radius: 5px;
+                }
+
+                .user-repos{
+                    flex-grow: 1;
                 }
             `}</style>
         </div>
