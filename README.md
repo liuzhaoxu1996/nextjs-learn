@@ -2,4 +2,4 @@
 
 ### Repo 组件
 
-[Repo.jsx](./code/pages/components/Repo.jsx)
+[Repo.jsx](./code/components/Repo.jsx)
