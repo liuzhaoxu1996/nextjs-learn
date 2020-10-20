@@ -119,8 +119,6 @@ Index.getInitialProps = async ({ ctx, reduxStore }) => {
             isLogin: false
         }
     }
-
-    console.log(ctx.req, ctx.res)
     const userRepos = await api.request({
         url: '/user/repos',
     }, ctx.req, ctx.res)
